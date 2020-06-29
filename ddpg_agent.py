@@ -80,7 +80,7 @@ class Agent():
 
         self.epsilon -= EPSILON_DECAY
         if add_noise:
-            action += self.noise.sample()
+            action += np.maximum(self.epsilon, 0.2) * self.noise.sample()
         return np.clip(action, -1, 1)
 
     def reset(self):
