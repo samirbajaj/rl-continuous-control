@@ -106,27 +106,24 @@ if __name__ == '__main__':
         scores = train_ddpg(agent, env, num_agents)
         plot_scores(scores)
     else:
+        # load parameters
         agent.actor_local.load_state_dict(torch.load('checkpoint_actor.pth'))
         agent.critic_local.load_state_dict(torch.load('checkpoint_critic.pth'))
 
-        scores = []
-        for i in range(1, 101):
-            env_info = env.reset(train_mode=False)[brain_name]  # reset the environment
-            states = env_info.vector_observations  # get the current state (for each agent)
-            score = np.zeros(num_agents)  # initialize the score (for each agent)
-            while True:
-                actions = agent.act(states)  # select an action (for each agent)
-                env_info = env.step(actions)[brain_name]  # send all actions to the environment
-                next_states = env_info.vector_observations  # get next state (for each agent)
-                rewards = env_info.rewards  # get reward (for each agent)
-                dones = env_info.local_done  # see if episode finished
-                score += env_info.rewards  # update the score (for each agent)
-                states = next_states  # roll over states to next time step
-                if np.any(dones):  # exit loop if episode finished
-                    break
-            scores.append(score)
-
-            if i % 10 == 0:
-                print('\rEpisode {}\tAverage Score: {:.2f}'.format(i, np.mean(scores)))
+        # test drive for one episode
+        env_info = env.reset(train_mode=False)[brain_name]  # reset the environment
+        states = env_info.vector_observations  # get the current state (for each agent)
+        scores = np.zeros(num_agents)  # initialize the score (for each agent)
+        while True:
+            actions = agent.act(states)  # select an action (for each agent)
+            env_info = env.step(actions)[brain_name]  # send all actions to the environment
+            next_states = env_info.vector_observations  # get next state (for each agent)
+            rewards = env_info.rewards  # get reward (for each agent)
+            dones = env_info.local_done  # see if episode finished
+            scores += env_info.rewards  # update the score (for each agent)
+            states = next_states  # roll over states to next time step
+            if np.any(dones):  # exit loop if episode finished
+                break
+        print('Total score (averaged over agents) this episode: {}'.format(np.mean(scores)))
 
     env.close()
