@@ -1,0 +1,15 @@
+
+See PPO: https://openai.com/blog/openai-baselines-ppo/
+
+Good Job here, the agent was able to solve the environment in a decent number of episodes!
+You can further boost your performance by allowing the agents to explore more aggressively.
+
+What happens when some/few of the agents reach a common state?
+
+They will start behaving exactly the same for the rest of the episode. To overcome this, you can have different networks for each of the agent.
+But, it doesn't makes sense to create different networks for our agents when they are exactly the same.
+
+So, what I would recommend here is that you keep one Network (same as in current scenario) but create different noise processes for each of the agent. This will ensure that each of the agents explore differently (in case they reach the same state) even though they share the same network; resulting in a boost of the training time.
+
+So, in the modified scenario, even though agents might be in similar state, they will explore different areas; while in the current scenario, if the agents are in similar state, they all will explore the same areas and your training will be much more slower.
+
